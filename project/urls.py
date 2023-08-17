@@ -3,7 +3,7 @@ from django.urls import path
 from datacenter import views
 
 urlpatterns = [
-    path(r'^$', views.view_classes, name='classes'),
+    path(r'', views.view_classes, name='classes'),
     path(r'^(?P<year>[\w+ ]+)/(?P<letter>[\w+ ]+)$', views.view_class_info,
         name='class_info'),
     path(r'^(?P<year>[\w+ ]+)/(?P<letter>[\w+ ]+)/schedule/$',
