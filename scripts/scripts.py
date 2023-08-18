@@ -39,7 +39,7 @@ def create_commendation(student_name, subject_title, text):
             group_letter=student.group_letter
         ).order_by('-date')
 
-        if subject_lessons.exists():
+        if subject_lessons:
             lesson_date = subject_lessons.first().date
         else:
             lesson_date = date.today()
