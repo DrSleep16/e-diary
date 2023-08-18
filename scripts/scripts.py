@@ -3,18 +3,31 @@ from datacenter.models import (Chastisement, Commendation, Lesson, Mark,
 from datetime import date
 
 
+def get_schoolkid(student_name):
+    try:
+        student = Schoolkid.objects.get(full_name__contains=student_name)
+        return student
+    except Schoolkid.DoesNotExist:
+        return None
+
+
 def fix_marks(schoolkid):
-    bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lt=4)
+    student = get_schoolkid(schoolkid)
+    bad_marks = Mark.objects.filter(schoolkid=student, points__lt=4)
     bad_marks.update(points=5)
 
+
 def remove_chastisements(schoolkid):
-    comments = Chastisement.objects.filter(schoolkid=schoolkid)
+    student = get_schoolkid(schoolkid)
+    comments = Chastisement.objects.filter(schoolkid=student)
     comments.delete()
 
 
 def create_commendation(student_name, subject_title, text):
     try:
-        student = Schoolkid.objects.get(full_name__contains=student_name)
+        student = get_schoolkid(student_name)
+        if student is None:
+            return False, "Ученик не найден."
 
         subject = Subject.objects.get(title=subject_title, year_of_study=student.year_of_study)
 
@@ -42,8 +55,6 @@ def create_commendation(student_name, subject_title, text):
 
         return True, "Похвала успешно создана."
 
-    except Schoolkid.DoesNotExist:
-        return False, "Ученик не найден."
     except Subject.DoesNotExist:
         return False, "Предмет не найден."
     except Teacher.DoesNotExist:
