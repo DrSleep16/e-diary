@@ -43,14 +43,13 @@ def create_commendation(student_name, subject_title, text):
 
         teacher = subject_lessons.first().teacher
 
-        commendation = Commendation(
+        Commendation.objects.create(
             text=text,
             created=lesson_date,
             schoolkid=student,
             subject=subject,
             teacher=teacher,
         )
-        commendation.save()
 
         return True, "Похвала успешно создана."
 
