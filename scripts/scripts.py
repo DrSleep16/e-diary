@@ -1,6 +1,7 @@
 from datacenter.models import (Chastisement, Commendation, Lesson, Mark,
                                Schoolkid, Subject, Teacher)
 from datetime import date
+from django.core.exceptions import MultipleObjectsReturned
 
 
 def get_schoolkid(student_name):
@@ -8,6 +9,8 @@ def get_schoolkid(student_name):
         student = Schoolkid.objects.get(full_name__contains=student_name)
         return student
     except Schoolkid.DoesNotExist:
+        return None
+    except MultipleObjectsReturned:
         return None
 
 
@@ -30,7 +33,6 @@ def create_commendation(student_name, subject_title, text):
             return False, "Ученик не найден."
 
         subject = Subject.objects.get(title=subject_title, year_of_study=student.year_of_study)
-
         subject_lessons = Lesson.objects.filter(
             subject=subject,
             year_of_study=student.year_of_study,
@@ -57,7 +59,9 @@ def create_commendation(student_name, subject_title, text):
 
     except Subject.DoesNotExist:
         return False, "Предмет не найден."
-    except Teacher.DoesNotExist:
-        return False, "Учитель не найден."
+    except MultipleObjectsReturned as m:
+        return False, str(m)
     except Exception as e:
         return False, str(e)
+    except MultipleObjectsReturned:
+        return None
