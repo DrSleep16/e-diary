@@ -59,5 +59,3 @@ def create_commendation(student_name, subject_title, text):
         return False, str(m)
     except Exception as e:
         return False, str(e)
-    except MultipleObjectsReturned:
-        return None
